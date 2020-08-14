@@ -1,0 +1,9 @@
+{
+  "name": "swm_backend",
+  "version": "1.0.0",
+  "description": "The backend server for the project 'cafe servi'",
+  "main": "index.js",
+  "repository": "https://git.swmgit.org/swmaestro/servience-1",
+  "author": "YeonGyu Kim <code.yeon.gyu@gmail.com>",
+  "license": "MIT"
+}
