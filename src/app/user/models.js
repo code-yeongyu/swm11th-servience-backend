@@ -12,8 +12,8 @@ const userSchema = new Schema({
 userSchema.index({ username: 1 })
 
 userSchema.methods.createPassword = async (password) => {
-    const bcrypt = require('bcrypt');
-    const saltRounds = 10;
+    const bcrypt = require('bcrypt')
+    const saltRounds = 10
     const salt = await bcrypt.genSalt(saltRounds)
     const hash = await bcrypt.hash(password, salt)
     return hash

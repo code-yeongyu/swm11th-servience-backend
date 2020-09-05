@@ -18,7 +18,6 @@ module.exports = (req, res, next) => {
             req.username = decoded.username
             next()
         } else {
-            console.log(err)
             res.send(400, err.name)
             return
         }

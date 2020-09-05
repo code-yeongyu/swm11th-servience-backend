@@ -3,16 +3,15 @@ const mongoose = require('mongoose')
 const User = mongoose.model("User")
 const jwt = require("jsonwebtoken")
 const secretObj = require("../../config/jwt")
-
+const { validationResult } = require('express-validator')
+const errorCodes = require('../../errors/codes.js')
+const errorWithMessage = require('../../utils/error_message.js')
 
 exports.register = async (req, res) => {
-    const { user } = req
-
-    if (user) {
-        res.preconditionFailed("existing_user")
-        return
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json(errors.array());
     }
-
     try {
         let user = new User(req.body)
         const password = await user.createPassword(req.body.password)
@@ -20,7 +19,6 @@ exports.register = async (req, res) => {
         await user.save()
         res.sendStatus(200)
     } catch (err) {
-        console.error(err)
         res.sendStatus(400)
     }
 }
