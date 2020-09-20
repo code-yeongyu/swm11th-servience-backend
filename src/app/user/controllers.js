@@ -1,14 +1,13 @@
 
 const mongoose = require('mongoose')
-const User = mongoose.model("User")
 const jwt = require("jsonwebtoken")
-const secretObj = require("../../config/jwt")
 const { validationResult } = require('express-validator')
-const errorCodes = require('../../errors/codes.js')
-const errorWithMessage = require('../../utils/error_message.js')
+const User = mongoose.model("User")
+const secretObj = require("../../config/jwt")
 
 exports.register = async (req, res) => {
     const errors = validationResult(req)
+    let isSuccess = false
     if (!errors.isEmpty()) {
         return res.status(400).json(errors.array());
     }
@@ -17,28 +16,32 @@ exports.register = async (req, res) => {
         const password = await user.createPassword(req.body.password)
         user.password = password
         await user.save()
-        res.sendStatus(200)
+        isSuccess = true
     } catch (err) {
-        res.sendStatus(400)
+        console.error(err)
+        isSuccess = false
     }
+    return res.sendStatus(isSuccess ? 200 : 400)
 }
 
 exports.auth = (req, res) => {
     User.findOne({ 'username': req.body.username }).then(user => {
         if (user) {
-            if (user.checkPassword(req.body.password)) {
-                let token = jwt.sign({
-                    username: req.body.username,   // 토큰의 내용(payload)
-                },
-                    secretObj.secret,    // 비밀 키
-                    {
-                        expiresIn: '5m'    // 유효 시간은 5분
-                    })
-                res.json({ token: token })
-                return
-            }
+            return res.sendStatus(400)
         }
-        res.sendStatus(400)
+        if (user.checkPassword(req.body.password)) {
+            let token = jwt.sign(
+                {
+                    username: req.body.username,
+                },
+                secretObj.secret,
+                {
+                    expiresIn: '5m'
+                }
+            )
+            return res.json({ token: token })
+        }
+        return res.sendStatus(400)
     })
 }
 
@@ -61,13 +64,13 @@ exports.editProfile = async (req, res) => {
             user.password = user.createPassword(password)
         }
         user.save()
-        res.json({
+        return res.json({
             "username": user.username,
             "nickname": nickname
         })
     } catch (err) {
-        console.log(err)
-        res.sendStatus(400)
+        console.error(err)
+        return res.sendStatus(400)
     }
 }
 
