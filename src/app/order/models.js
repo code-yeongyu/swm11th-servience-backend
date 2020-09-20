@@ -7,8 +7,8 @@ const orderSchema = new Schema({
     //menu: menuSchema,
     orderer: { type: userSchema, required: true },
     menu: { type: integer, required: true },
-    table_id: { type: integer, required: true }
+    table_id: { type: integer, required: true },
     store_id: { type: integer, required: true }
 })
 
-module.exports = mongoose.model('Order', uerSchema)
+module.exports = mongoose.model('Order', orderSchema)
