@@ -8,8 +8,11 @@ app.use(morgan('combined'))
 //DEFAULT MIDDLEWARES
 
 require('./app/user/models.js')
+require('./app/order/models.js')
 const userRoutes = require('./app/user/routes.js')
+const orderRoutes = require('./app/order/routes.js')
 app.use('/user', userRoutes)
+app.use('/order', orderRoutes)
 //APP SETUPS
 
 const mongoose = require('mongoose')
