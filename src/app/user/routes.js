@@ -18,7 +18,7 @@ const registerationUsernameValidator = body('username').notEmpty().withMessage(e
             }
         });
     })
-const securePasswordValidator = body('password').matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$").withMessage(errorWithMessage(errorCode.PasswordVulnerable))
+const securePasswordValidator = body('password').isLength({ min: 8 }).withMessage(errorWithMessage(errorCode.PasswordVulnerable))
 const authenticationUsernameValidator = body('username').notEmpty().withMessage(errorWithMessage(errorCode.FormError))
 const notEmptyPasswordValidator = body('password').notEmpty()
 // validators
