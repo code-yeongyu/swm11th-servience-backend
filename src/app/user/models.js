@@ -19,8 +19,8 @@ userSchema.methods.createPassword = async (password) => {
     return hash
 }
 
-userSchema.methods.checkPassword = async (password) => {
-    return await bcrypt.compare(password, this.password)
+userSchema.methods.checkPassword = (password, hash) => {
+    return bcrypt.compareSync(password, hash)
 }
 
 module.exports = mongoose.model('User', userSchema)

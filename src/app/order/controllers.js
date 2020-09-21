@@ -1,6 +1,5 @@
 const mongoose = require('mongoose')
 const { validationResult } = require('express-validator')
-const User = mongoose.model('User')
 const Order = mongoose.model('Order')
 const io = require('../../utils/websocket.js')
 
