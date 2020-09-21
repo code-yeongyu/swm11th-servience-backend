@@ -8,8 +8,11 @@ app.use(morgan('combined'))
 //DEFAULT MIDDLEWARES
 
 require('./app/user/models.js')
+require('./app/order/models.js')
 const userRoutes = require('./app/user/routes.js')
+const orderRoutes = require('./app/order/routes.js')
 app.use('/user', userRoutes)
+app.use('/order', orderRoutes)
 //APP SETUPS
 
 const mongoose = require('mongoose')
@@ -18,7 +21,14 @@ db.on('error', console.error)
 db.once('open', () => {
     console.log("Connected to mongoDB server")
 })
-mongoose.connect("mongodb://localhost/servience", { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })
+
+if (process.env.NODE_ENV === "test") {
+    mongoose.connect("mongodb://localhost/servience_test", { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })
+} else {
+    mongoose.connect("mongodb://localhost/servience", { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })
+}
+
+
 //DB CONNECTION
 
 const PORT = process.env.PORT || 3000
