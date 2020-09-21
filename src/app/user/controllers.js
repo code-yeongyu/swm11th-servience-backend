@@ -18,31 +18,24 @@ exports.register = async (req, res) => {
         await user.save()
         isSuccess = true
     } catch (err) {
-        console.error(err)
-        isSuccess = false
     }
     return res.sendStatus(isSuccess ? 200 : 400)
 }
 
-exports.auth = (req, res) => {
-    User.findOne({ 'username': req.body.username }).then(user => {
-        if (user) {
-            return res.sendStatus(400)
-        }
-        if (user.checkPassword(req.body.password)) {
-            let token = jwt.sign(
-                {
-                    username: req.body.username,
-                },
-                secretObj.secret,
-                {
-                    expiresIn: '5m'
-                }
-            )
-            return res.json({ token: token })
-        }
+exports.auth = async (req, res) => {
+    let user = await User.findOne({ 'username': req.body.username })
+    if (user === null) {
         return res.sendStatus(400)
-    })
+    }
+    if (user.checkPassword(req.body.password, user.password)) {
+        let token = jwt.sign(
+            { username: req.body.username },
+            secretObj.secret,
+            { expiresIn: '5m' }
+        )
+        return res.json({ token: token })
+    }
+    return res.sendStatus(400)
 }
 
 exports.getProfile = async (req, res) => {
@@ -54,8 +47,8 @@ exports.getProfile = async (req, res) => {
 }
 
 exports.editProfile = async (req, res) => {
+    const { nickname, password } = req.body
     try {
-        const { nickname, password } = req.body
         const user = await User.findOne({ 'username': req.username })
         if (nickname) {
             user.nickname = nickname
@@ -69,7 +62,6 @@ exports.editProfile = async (req, res) => {
             "nickname": nickname
         })
     } catch (err) {
-        console.error(err)
         return res.sendStatus(400)
     }
 }

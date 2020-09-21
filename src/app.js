@@ -27,8 +27,6 @@ if (process.env.NODE_ENV === "test") {
 } else {
     mongoose.connect("mongodb://localhost/servience", { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })
 }
-
-
 //DB CONNECTION
 
 const PORT = process.env.PORT || 3000
