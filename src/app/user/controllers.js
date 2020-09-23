@@ -5,39 +5,6 @@ const { validationResult } = require('express-validator')
 const User = mongoose.model("User")
 const secretObj = require("../../config/jwt")
 
-exports.register = async (req, res) => {
-    const errors = validationResult(req)
-    let isSuccess = false
-    if (!errors.isEmpty()) {
-        return res.status(400).json(errors.array());
-    }
-    try {
-        let user = new User(req.body)
-        const password = await user.createPassword(req.body.password)
-        user.password = password
-        await user.save()
-        isSuccess = true
-    } catch (err) {
-    }
-    return res.sendStatus(isSuccess ? 200 : 400)
-}
-
-exports.auth = async (req, res) => {
-    let user = await User.findOne({ 'username': req.body.username })
-    if (user === null) {
-        return res.sendStatus(400)
-    }
-    if (user.checkPassword(req.body.password, user.password)) {
-        let token = jwt.sign(
-            { username: req.body.username },
-            secretObj.secret,
-            { expiresIn: '5m' }
-        )
-        return res.json({ token: token })
-    }
-    return res.sendStatus(400)
-}
-
 exports.getProfile = async (req, res) => {
     const user = await User.findOne({ 'username': req.username })
     return res.json({
@@ -47,6 +14,10 @@ exports.getProfile = async (req, res) => {
 }
 
 exports.editProfile = async (req, res) => {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json(errors.array());
+    }
     const { nickname, password } = req.body
     try {
         const user = await User.findOne({ 'username': req.username })
@@ -62,7 +33,44 @@ exports.editProfile = async (req, res) => {
             "nickname": nickname
         })
     } catch (err) {
-        return res.sendStatus(400)
+        return res.sendStatus(500) // never can be happened unless server error has occured
     }
 }
 
+exports.register = async (req, res) => {
+    const errors = validationResult(req)
+    let isSuccess = false
+    if (!errors.isEmpty()) {
+        return res.status(400).json(errors.array());
+    }
+    try {
+        let user = new User(req.body)
+        const password = await user.createPassword(req.body.password)
+        user.password = password
+        await user.save()
+        isSuccess = true
+        res.sendStatus(200)
+    } catch (err) {
+        return res.sendStatus(500) // never can be happened unless server error has occured
+    }
+}
+
+exports.auth = async (req, res) => {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json(errors.array());
+    }
+    let user = await User.findOne({ 'username': req.body.username })
+    if (user === null) {
+        return res.sendStatus(400)
+    }
+    if (!user.checkPassword(req.body.password, user.password)) {
+        return res.sendStatus(400)
+    }
+    let token = jwt.sign(
+        { username: req.body.username },
+        secretObj.secret,
+        { expiresIn: '5m' }
+    )
+    return res.json({ token: token })
+}
