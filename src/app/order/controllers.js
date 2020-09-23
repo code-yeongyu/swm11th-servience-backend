@@ -8,21 +8,20 @@ exports.getOrders = async (req, res) => {
     if (!errors.isEmpty()) {
         return res.status(400).json(errors.array())
     }
-    // check user's attached store
+    // place below check user's attached store 
+    /**/
     try {
         let pendingOrders = await Order.find({ 'isPending': true })
         return res.json({
             "orders": pendingOrders
         })
     } catch (err) {
-        console.log(err)
-        return res.sendStatus(400)
+        return res.sendStatus(500) // never can be happened unless server error has occured
     }
 }
 
 exports.addOrder = async (req, res) => {
     const errors = validationResult(req)
-    let isSuccess = false
     if (!errors.isEmpty()) {
         return res.status(400).json(errors.array())
     }
@@ -30,11 +29,10 @@ exports.addOrder = async (req, res) => {
         let order = new Order(req.body)
         order.orderer = req.username
         await order.save()
-        isSuccess = true
+        return res.sendStatus(200)
     } catch (err) {
-        console.error(err)
+        return res.sendStatus(500) // never can be happened unless server error has occured
     }
-    return res.sendStatus(isSuccess ? 200 : 400)
 }
 
 exports.serve = async (req, res) => {
@@ -47,7 +45,7 @@ exports.serve = async (req, res) => {
         order.isPending = false
         order.save()
     } catch (err) {
-        return res.sendStatus(400)
+        return res.sendStatus(500) // never can be happened unless server error has occured
     }
     io.clients.forEach((client) => {
         client.send(JSON.stringify(req.body))
