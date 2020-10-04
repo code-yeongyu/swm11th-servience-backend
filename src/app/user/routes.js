@@ -8,7 +8,7 @@ const authMiddleware = require('../../middlewares/auth.js')
 const errorCode = require('../../errors/codes.js')
 const errorWithMessage = require('../../utils/error_message.js')
 
-const registerationUsernameValidator = body('username').notEmpty().withMessage(errorWithMessage(errorCode.FormError))
+const registerationUsernameValidator = body('username').notEmpty().withMessage(errorWithMessage(errorCode.ParameterError))
     .matches("^[a-zA-Z0-9_]*$").withMessage(errorWithMessage(errorCode.UsernameFormatError))
     .custom(value => {
         return User.findOne({ 'username': value }).then(user => {
@@ -19,8 +19,8 @@ const registerationUsernameValidator = body('username').notEmpty().withMessage(e
         });
     })
 const securePasswordValidator = body('password').isLength({ min: 8 }).withMessage(errorWithMessage(errorCode.PasswordVulnerable))
-const authenticationUsernameValidator = body('username').notEmpty().withMessage(errorWithMessage(errorCode.FormError))
-const notEmptyPasswordValidator = body('password').notEmpty().withMessage(errorWithMessage(errorCode.FormError))
+const authenticationUsernameValidator = body('username').notEmpty().withMessage(errorWithMessage(errorCode.ParameterError))
+const notEmptyPasswordValidator = body('password').notEmpty().withMessage(errorWithMessage(errorCode.ParameterError))
 // validators
 
 router.get('/', authMiddleware, controllers.getProfile)
