@@ -2,10 +2,76 @@ const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
+const errorCode = require('./errors/codes.js')
+const errorWithMessage = require('./utils/error_message.js')
+
+
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(morgan('combined'))
 //DEFAULT MIDDLEWARES
+
+
+
+require('express-ws')(app)
+const websockets_util = require('./utils/websockets.js')
+app.ws('/display', function (ws, req) {
+    ws.on("message", function (msg) {
+        try {
+            let content = JSON.parse(msg)
+            if (!(content.flag && content.id)) {
+                return ws.send(JSON.stringify({
+                    'status': 400,
+                    'error': errorWithMessage(errorCode.ParameterError)
+                }))
+            }
+            if (content.flag === 'auth') {
+                this.is_authenticated = true
+                websockets_util.display_store.push(ws)
+                this.websocket_id = content.id // the id is built in to the robot
+                return ws.send(JSON.stringify({
+                    'status': 200,
+                    'websocket_id': this.websocket_id,
+                    'is_authenticated': this.is_authenticated
+                }))
+            }
+        } catch (err) {
+            return ws.send(JSON.stringify({
+                'status': 400,
+                'error': errorWithMessage(errorCode.FormError)
+            }))
+        }
+    })
+})
+app.ws('/robot', function (ws, req) {
+    ws.on("message", function (msg) {
+        try {
+            let content = JSON.parse(msg)
+            if (!(content.flag && content.id)) {
+                return ws.send(JSON.stringify({
+                    'status': 400,
+                    'error': errorWithMessage(errorCode.ParameterError)
+                }))
+            }
+            if (content.flag === 'auth') {
+                this.is_authenticated = true
+                websockets_util.robot_store.push(ws)
+                this.websocket_id = content.id // the id is built in to the robot
+                return ws.send(JSON.stringify({
+                    'status': 200,
+                    'websocket_id': this.websocket_id,
+                    'is_authenticated': this.is_authenticated
+                }))
+            }
+        } catch (err) {
+            return ws.send(JSON.stringify({
+                'status': 400,
+                'error': errorWithMessage(errorCode.FormError)
+            }))
+        }
+    })
+})
+//WEBSOCKETS
 
 require('./app/user/models.js')
 require('./app/order/models.js')

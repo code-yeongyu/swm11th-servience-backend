@@ -6,7 +6,7 @@ const orderSchema = new Schema({
     store_id: { type: Number, get: (value) => Math.round(value), set: (value) => Math.round(value), required: true },
     table_id: { type: Number, get: (value) => Math.round(value), set: (value) => Math.round(value), required: true },
     menu: { type: Number, get: (value) => Math.round(value), set: (value) => Math.round(value), required: true },
-    isPending: { type: Boolean, default: true }
+    serving_status: { type: Number, default: 0 } // 0 for waiting, 1 for serving, 2 for done
 })
 orderSchema.index({});
 
