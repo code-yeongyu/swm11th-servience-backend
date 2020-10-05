@@ -6,14 +6,14 @@ const authMiddleware = require('../../middlewares/auth.js')
 const errorCode = require('../../errors/codes.js')
 const errorWithMessage = require('../../utils/error_message.js')
 
-const menuNotValidator = body('menu').notEmpty().withMessage(errorWithMessage(errorCode.ParameterError))
-const tableIDNotValidator = body('table_id').notEmpty().withMessage(errorWithMessage(errorCode.ParameterError))
-const storeIDNotValidator = body('store_id').notEmpty().withMessage(errorWithMessage(errorCode.ParameterError))
-const idNotValidator = body('order_id').notEmpty().withMessage(errorWithMessage(errorCode.ParameterError))
+const menuNotEmptyValidator = body('menu').notEmpty().withMessage(errorWithMessage(errorCode.ParameterError))
+const tableIDNotEmptyValidator = body('table_id').notEmpty().withMessage(errorWithMessage(errorCode.ParameterError))
+const storeIDNotEmptyValidator = body('store_id').notEmpty().withMessage(errorWithMessage(errorCode.ParameterError))
+const idValidator = body('order_ids').notEmpty().withMessage(errorWithMessage(errorCode.ParameterError)).isArray().withMessage(errorWithMessage(errorCode.ParameterError))
 
 router.get('/', authMiddleware, controllers.getOrders)
-router.post('/', [authMiddleware, menuNotValidator, tableIDNotValidator, storeIDNotValidator], controllers.addOrder)
+router.post('/', [authMiddleware, menuNotEmptyValidator, tableIDNotEmptyValidator, storeIDNotEmptyValidator], controllers.addOrder)
 router.patch('/:order_id', authMiddleware, controllers.updateStatus)
-router.post('/serve', [authMiddleware, idNotValidator], controllers.serve)
+router.post('/serve', [authMiddleware, idValidator], controllers.serve)
 
 module.exports = router
