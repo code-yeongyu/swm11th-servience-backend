@@ -39,7 +39,6 @@ exports.editProfile = async (req, res) => {
 
 exports.register = async (req, res) => {
     const errors = validationResult(req)
-    let isSuccess = false
     if (!errors.isEmpty()) {
         return res.status(400).json(errors.array());
     }
