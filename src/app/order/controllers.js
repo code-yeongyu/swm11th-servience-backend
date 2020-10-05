@@ -60,15 +60,27 @@ exports.serve = async (req, res) => {
     if (!errors.isEmpty()) {
         return res.status(400).json(errors.array())
     }
-    try {
-        const order = await Order.findById(req.body.order_id)
-        order.isPending = false
-        order.save()
-    } catch (err) {
-        return res.sendStatus(500) // never can be happened unless server error has occured
+
+    let { order_ids } = req.body
+    let waiting_orders = new Array(order_ids.length) // hack for gc
+
+    for (let i = 0; i < order_ids.length; i++) {
+        const order_id = order_ids[i]
+        try {
+            const order = await Order.findById({ "_id": order_id })
+            waiting_orders.push(order)
+        } catch (err) {
+            return res.sendStatus(500) // never can be happened unless server error has occured
+        }
     }
-    io.clients.forEach((client) => {
-        client.send(JSON.stringify(req.body))
-    })
+    if (waiting_orders.length === 0) {
+        return res.sendStatus(200)
+    }
+    const result_orders = {
+        "orders": waiting_orders
+    }
+
+    wsUtil.broadcast(wsUtil.robot_store, wsUtil.createMessage(wsMessageType.Add, wsMessageType.Robot, result_orders))
+
     return res.sendStatus(200)
 }
