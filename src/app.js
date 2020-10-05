@@ -11,6 +11,8 @@ app.use(bodyParser.json())
 app.use(morgan('combined'))
 //DEFAULT MIDDLEWARES
 
+
+
 require('express-ws')(app)
 const websockets_util = require('./utils/websockets.js')
 app.ws('/display', function (ws, req) {
@@ -46,13 +48,26 @@ app.ws('/robot', function (ws, req) {
         try {
             let content = JSON.parse(msg)
             if (!(content.flag && content.id)) {
-                return ws.send("Both 'flag' and 'id' parameters are required")
+                return ws.send(JSON.stringify({
+                    'status': 400,
+                    'error': errorWithMessage(errorCode.ParameterError)
+                }))
             }
             if (content.flag === 'auth') {
+                this.is_authenticated = true
+                websockets_util.robot_store.push(ws)
                 this.websocket_id = content.id // the id is built in to the robot
+                return ws.send(JSON.stringify({
+                    'status': 200,
+                    'websocket_id': this.websocket_id,
+                    'is_authenticated': this.is_authenticated
+                }))
             }
         } catch (err) {
-            return ws.send("Try with valid JSON")
+            return ws.send(JSON.stringify({
+                'status': 400,
+                'error': errorWithMessage(errorCode.FormError)
+            }))
         }
     })
 })
