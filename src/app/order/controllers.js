@@ -1,10 +1,7 @@
 const mongoose = require('mongoose')
 const { validationResult } = require('express-validator')
 const Order = mongoose.model('Order')
-const io = require('../../utils/websocket.js')
 const wsUtil = require('../../utils/websockets.js')
-const wsMessageType = require('../../utils/websocket_enum.js')
-
 
 exports.getOrders = async (req, res) => {
     const errors = validationResult(req)
