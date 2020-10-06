@@ -28,10 +28,10 @@ app.ws('/display', function (ws, req) {
             if (content.flag === 'auth') {
                 this.is_authenticated = true
                 websockets_util.display_store.push(ws)
-                this.websocket_id = content.id // the id is built in to the robot
+                this.product_id = content.id // the id is built in to the robot
                 return ws.send(JSON.stringify({
                     'status': 200,
-                    'websocket_id': this.websocket_id,
+                    'product_id': this.product_id,
                     'is_authenticated': this.is_authenticated
                 }))
             }
@@ -56,10 +56,10 @@ app.ws('/robot', function (ws, req) {
             if (content.flag === 'auth') {
                 this.is_authenticated = true
                 websockets_util.robot_store.push(ws)
-                this.websocket_id = content.id // the id is built in to the robot
+                this.product_id = content.id // the id is built in to the robot
                 return ws.send(JSON.stringify({
                     'status': 200,
-                    'websocket_id': this.websocket_id,
+                    'product_id': this.product_id,
                     'is_authenticated': this.is_authenticated
                 }))
             }
@@ -75,10 +75,13 @@ app.ws('/robot', function (ws, req) {
 
 require('./app/user/models.js')
 require('./app/order/models.js')
+require('./app/cup/models.js')
 const userRoutes = require('./app/user/routes.js')
 const orderRoutes = require('./app/order/routes.js')
+const cupRoutes = require('./app/cup/routes.js')
 app.use('/user', userRoutes)
 app.use('/order', orderRoutes)
+app.use('/cup', cupRoutes)
 //APP SETUPS
 
 const mongoose = require('mongoose')

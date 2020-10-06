@@ -29,7 +29,7 @@ exports.addOrder = async (req, res) => {
         return res.status(400).json(errors.array())
     }
     try {
-        let order = new Order(req.body)
+        const order = new Order(req.body)
         order.orderer = req.username
         await order.save()
         wsUtil.broadcast(wsUtil.display_store, wsUtil.createMessage(wsMessageType.Add, wsTargetObject.Order, order))
@@ -61,13 +61,13 @@ exports.serve = async (req, res) => {
         return res.status(400).json(errors.array())
     }
 
-    let { order_ids } = req.body
-    let waiting_orders = new Array(order_ids.length) // hack for gc
+    const { order_ids } = req.body
+    const waiting_orders = new Array(order_ids.length) // hack for gc
 
     for (let i = 0; i < order_ids.length; i++) {
         const order_id = order_ids[i]
         try {
-            const order = await Order.findById({ "_id": order_id })
+            const order = await Order.findById(order_id)
             waiting_orders.push(order)
         } catch (err) {
             return res.sendStatus(500) // never can be happened unless server error has occured

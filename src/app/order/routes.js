@@ -1,7 +1,7 @@
 const express = require('express')
 const { body } = require('express-validator')
 const router = express.Router()
-const controllers = require('./controllers')
+const controllers = require('./controllers.js')
 const authMiddleware = require('../../middlewares/auth.js')
 const errorCode = require('../../errors/codes.js')
 const errorWithMessage = require('../../utils/error_message.js')
