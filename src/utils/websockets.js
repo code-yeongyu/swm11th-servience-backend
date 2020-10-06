@@ -14,3 +14,25 @@ exports.broadcast = (clients, message) => {
         client.send(message)
     })
 }
+
+exports.send = (clients, client_id, message) => {
+    for (let i = 0; i < clients.length; i++) {
+        const client = clients[i]
+        if (client.websocket_id === client_id) {
+            client.send(message)
+            return
+        }
+    }
+}
+
+
+exports.validateProductID = (product_id) => {
+    const products = new Array(new Set(this.robot_store + this.display_store))
+    for (let i = 0; i < products.length; i++) {
+        const product = products[i]
+        if (product.product_id === product_id) {
+            return true
+        }
+    }
+    return false
+}
