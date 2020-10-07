@@ -28,6 +28,7 @@ exports.addOrder = async (req, res) => {
     if (!errors.isEmpty()) {
         return res.status(400).json(errors.array())
     }
+    req.body.serving_status = undefined
     try {
         const order = new Order(req.body)
         order.orderer = req.username
