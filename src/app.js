@@ -84,6 +84,40 @@ app.use('/order', orderRoutes)
 app.use('/cup', cupRoutes)
 //APP SETUPS
 
+const swaggerJSDoc = require('swagger-jsdoc')
+const swaggerUI = require('swagger-ui-express')
+const swaggerDefinition = {
+    info: {
+        title: 'CafeServi BackEnd',
+        version: '1.0.0',
+        description: 'Backend REST API server',
+        contact: {
+            name: "YeonGyu Kim",
+            email: "code.yeon.gyu@gmail.com",
+        },
+    },
+    securityDefinitions: {
+        jwt: {
+            type: 'apiKey',
+            name: 'Authorization',
+            in: 'header'
+        }
+    },
+    security: [
+        { jwt: [] }
+    ],
+    basePath: '/'
+};
+
+const options = {
+    swaggerDefinition,
+    apis: ['./src/app/*/routes.js']
+};
+
+const swaggerSpec = swaggerJSDoc(options);
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
+// DOCUMENTATION
+
 const mongoose = require('mongoose')
 const db = mongoose.connection;
 db.on('error', console.error)
