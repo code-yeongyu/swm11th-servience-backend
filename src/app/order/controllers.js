@@ -28,6 +28,7 @@ exports.addOrder = async (req, res) => {
     if (!errors.isEmpty()) {
         return res.status(400).json(errors.array())
     }
+    req.body.serving_status = undefined
     try {
         const order = new Order(req.body)
         order.orderer = req.username
@@ -39,17 +40,22 @@ exports.addOrder = async (req, res) => {
     }
 }
 
-exports.updateStatus = async (req, res) => {
+exports.updateStatusDone = async (req, res) => {
     const order_id = req.param("order_id")
     if (order_id) {
-        const order = await Order.findOne({ '_id': order_id })
-        if (order.servingStatus == 2) {
-            return res.sendStatus(400)
+        try {
+            const order = await Order.findOne({ '_id': order_id })
+            if (order.serving_status === 2) {
+                return res.sendStatus(400)
+            }
+            order.serving_status = 2
+            await order.save()
+            wsUtil.broadcast(wsUtil.display_store, wsUtil.createMessage(wsMessageType.Update, wsMessageType.Order, order))
+            // codes for notifying to display should be placed here.
+            return res.sendStatus(200)
+        } catch (err) {
+            return res.sendStatus(404)
         }
-        await order.save()
-        wsUtil.broadcast(wsUtil.display_store, wsUtil.createMessage(wsMessageType.Update, wsMessageType.Order, order))
-        // codes for notifying to display should be placed here.
-        return res.sendStatus(200)
     } else {
         return res.sendStatus(400)
     }
@@ -68,9 +74,14 @@ exports.serve = async (req, res) => {
         const order_id = order_ids[i]
         try {
             const order = await Order.findById(order_id)
+            if (order.serving_status !== 0) {
+                continue
+            } // validating serving status
+            order.serving_status = 1
+            await order.save()
             waiting_orders.push(order)
         } catch (err) {
-            return res.sendStatus(500) // never can be happened unless server error has occured
+            continue // never can be happened unless server error has occured
         }
     }
     if (waiting_orders.length === 0) {

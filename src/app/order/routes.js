@@ -16,11 +16,10 @@
  *                  type: string
  *                  description: 주문자 username
  *              store_id:
- *                  type: integer
- *                  description: store의 id
+ *                  type: string
+ *                  description: store의 id, websocket에 사용되는 product_id 와 동일
  *              table_id:
  *                  type: integer
- *                  description: table의 id
  *              menu:
  *                  type: integer
  *                  descriptipn: 주문한 menu 의 id
@@ -44,8 +43,8 @@
  *                                      type: string
  *                                      description: 주문자 username
  *                                  store_id:
- *                                      type: integer
- *                                      description: store의 id
+ *                                      type: string
+ *                                      description: store의 id, websocket에 사용되는 product_id 와 동일
  *                                  table_id:
  *                                      type: integer
  *                                      description: table의 id
@@ -65,8 +64,8 @@
  *              - menu
  *          properties:
  *              store_id:
- *                  type: integer
- *                  description: store의 id
+ *                  type: string
+ *                  description: store의 id, websocket에 사용되는 product_id 와 동일
  *              table_id:
  *                  type: integer
  *                  description: table의 id
@@ -125,7 +124,7 @@
  *      patch:
  *          tags:
  *              - order
- *          description: "order_id 의 파라미터 값에 해당되는 id의 서빙 상태를 한단계 올립니다."
+ *          description: "order_id 의 파라미터 값에 해당되는 id의 서빙 상태를 완료로 바꿉니다."
  *          produces:
  *              - applicaion/json
  *          parameters:
@@ -135,11 +134,9 @@
  *                    $ref: "#/definitions/create_order_request"
  *          responses:
  *              200:
- *                  description: successfull updated status to next level
+ *                  description: successfully updated status to 2
  *              400:
- *                  description: the serving status is already at highest level
- *              401:
- *                  description: Unauthorized
+ *                  description: the serving status is already 2
  *              404:
  *                  description: No such ID
  * /order/serve:
@@ -159,8 +156,6 @@
  *                  description: successfull updated status to next level
  *              400:
  *                  description: the serving status is already at highest level
- *              401:
- *                  description: Unauthorized
  *              404:
  *                  description: No such ID
  */
@@ -180,7 +175,7 @@ const idValidator = body('order_ids').notEmpty().withMessage(errorWithMessage(er
 
 router.get('/', authMiddleware, controllers.getOrders)
 router.post('/', [authMiddleware, menuNotEmptyValidator, tableIDNotEmptyValidator, storeIDNotEmptyValidator], controllers.addOrder)
-router.patch('/:order_id', authMiddleware, controllers.updateStatus)
-router.post('/serve', [authMiddleware, idValidator], controllers.serve)
+router.patch('/:order_id', controllers.updateStatusDone)
+router.post('/serve', idValidator, controllers.serve)
 
 module.exports = router
