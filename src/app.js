@@ -2,18 +2,121 @@ const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
+const errorCode = require('./errors/codes.js')
+const errorWithMessage = require('./utils/error_message.js')
+
+
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(morgan('combined'))
 //DEFAULT MIDDLEWARES
 
+
+
+require('express-ws')(app)
+const websockets_util = require('./utils/websockets.js')
+app.ws('/display', function (ws, req) {
+    ws.on("message", function (msg) {
+        try {
+            let content = JSON.parse(msg)
+            if (!(content.flag && content.id)) {
+                return ws.send(JSON.stringify({
+                    'status': 400,
+                    'error': errorWithMessage(errorCode.ParameterError)
+                }))
+            }
+            if (content.flag === 'auth') {
+                this.is_authenticated = true
+                websockets_util.display_store.push(ws)
+                this.product_id = content.id // the id is built in to the robot
+                return ws.send(JSON.stringify({
+                    'status': 200,
+                    'product_id': this.product_id,
+                    'is_authenticated': this.is_authenticated
+                }))
+            }
+        } catch (err) {
+            return ws.send(JSON.stringify({
+                'status': 400,
+                'error': errorWithMessage(errorCode.FormError)
+            }))
+        }
+    })
+})
+app.ws('/robot', function (ws, req) {
+    ws.on("message", function (msg) {
+        try {
+            let content = JSON.parse(msg)
+            if (!(content.flag && content.id)) {
+                return ws.send(JSON.stringify({
+                    'status': 400,
+                    'error': errorWithMessage(errorCode.ParameterError)
+                }))
+            }
+            if (content.flag === 'auth') {
+                this.is_authenticated = true
+                websockets_util.robot_store.push(ws)
+                this.product_id = content.id // the id is built in to the robot
+                return ws.send(JSON.stringify({
+                    'status': 200,
+                    'product_id': this.product_id,
+                    'is_authenticated': this.is_authenticated
+                }))
+            }
+        } catch (err) {
+            return ws.send(JSON.stringify({
+                'status': 400,
+                'error': errorWithMessage(errorCode.FormError)
+            }))
+        }
+    })
+})
+//WEBSOCKETS
+
 require('./app/user/models.js')
 require('./app/order/models.js')
+require('./app/cup/models.js')
 const userRoutes = require('./app/user/routes.js')
 const orderRoutes = require('./app/order/routes.js')
+const cupRoutes = require('./app/cup/routes.js')
 app.use('/user', userRoutes)
 app.use('/order', orderRoutes)
+app.use('/cup', cupRoutes)
 //APP SETUPS
+
+const swaggerJSDoc = require('swagger-jsdoc')
+const swaggerUI = require('swagger-ui-express')
+const swaggerDefinition = {
+    info: {
+        title: 'CafeServi BackEnd',
+        version: '1.0.0',
+        description: 'Backend REST API server',
+        contact: {
+            name: "YeonGyu Kim",
+            email: "code.yeon.gyu@gmail.com",
+        },
+    },
+    securityDefinitions: {
+        jwt: {
+            type: 'apiKey',
+            name: 'Authorization',
+            in: 'header'
+        }
+    },
+    security: [
+        { jwt: [] }
+    ],
+    basePath: '/'
+};
+
+const options = {
+    swaggerDefinition,
+    apis: ['./src/app/*/routes.js']
+};
+
+const swaggerSpec = swaggerJSDoc(options);
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
+// DOCUMENTATION
 
 const mongoose = require('mongoose')
 const db = mongoose.connection;

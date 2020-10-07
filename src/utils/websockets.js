@@ -1,0 +1,38 @@
+exports.robot_store = []
+exports.display_store = []
+
+exports.createMessage = (message_type, target_object, content) => {
+    return JSON.stringify({
+        "type": message_type, // ADD, UPDATE, SERVE
+        "target_object": target_object, // ORDER, CUP, ROBOT
+        "content": content
+    })
+}
+
+exports.broadcast = (clients, message) => {
+    clients.forEach((client) => {
+        client.send(message)
+    })
+}
+
+exports.send = (clients, client_id, message) => {
+    for (let i = 0; i < clients.length; i++) {
+        const client = clients[i]
+        if (client.websocket_id === client_id) {
+            client.send(message)
+            return
+        }
+    }
+}
+
+
+exports.validateProductID = (product_id) => {
+    const products = new Array(new Set(this.robot_store + this.display_store))
+    for (let i = 0; i < products.length; i++) {
+        const product = products[i]
+        if (product.product_id === product_id) {
+            return true
+        }
+    }
+    return false
+}
