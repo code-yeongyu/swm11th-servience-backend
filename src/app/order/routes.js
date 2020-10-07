@@ -16,11 +16,10 @@
  *                  type: string
  *                  description: 주문자 username
  *              store_id:
- *                  type: integer
- *                  description: store의 id
+ *                  type: string
+ *                  description: store의 id, websocket에 사용되는 product_id 와 동일
  *              table_id:
  *                  type: integer
- *                  description: table의 id
  *              menu:
  *                  type: integer
  *                  descriptipn: 주문한 menu 의 id
@@ -44,8 +43,8 @@
  *                                      type: string
  *                                      description: 주문자 username
  *                                  store_id:
- *                                      type: integer
- *                                      description: store의 id
+ *                                      type: string
+ *                                      description: store의 id, websocket에 사용되는 product_id 와 동일
  *                                  table_id:
  *                                      type: integer
  *                                      description: table의 id
@@ -65,8 +64,8 @@
  *              - menu
  *          properties:
  *              store_id:
- *                  type: integer
- *                  description: store의 id
+ *                  type: string
+ *                  description: store의 id, websocket에 사용되는 product_id 와 동일
  *              table_id:
  *                  type: integer
  *                  description: table의 id
