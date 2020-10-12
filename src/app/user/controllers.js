@@ -48,7 +48,7 @@ exports.register = async (req, res) => {
         user.password = password
         await user.save()
         isSuccess = true
-        res.sendStatus(200)
+        res.sendStatus(201)
     } catch (err) {
         return res.sendStatus(500) // never can be happened unless server error has occured
     }
