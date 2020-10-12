@@ -93,8 +93,8 @@
  *                schema:
  *                      $ref: "#/definitions/user_collection"
  *          responses:
- *              200:
- *                  description: OK
+ *              201:
+ *                  description: User created
  *              400:
  *                  description: ParameterError
  * /user/auth:
