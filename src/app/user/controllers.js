@@ -33,6 +33,7 @@ exports.editProfile = async (req, res) => {
             "nickname": nickname
         })
     } catch (err) {
+        console.error(err)
         return res.sendStatus(500) // never can be happened unless server error has occured
     }
 }
@@ -50,6 +51,7 @@ exports.register = async (req, res) => {
         isSuccess = true
         res.sendStatus(201)
     } catch (err) {
+        console.error(err)
         return res.sendStatus(500) // never can be happened unless server error has occured
     }
 }

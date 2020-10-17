@@ -19,6 +19,7 @@ exports.getOrders = async (req, res) => {
             "orders": unfinished_orders
         })
     } catch (err) {
+        console.error(err)
         return res.sendStatus(500) // never can be happened unless server error has occured
     }
 }
@@ -36,6 +37,7 @@ exports.addOrder = async (req, res) => {
         wsUtil.broadcast(wsUtil.display_store, wsUtil.createMessage(wsMessageType.Add, wsTargetObject.Order, order))
         return res.sendStatus(200)
     } catch (err) {
+        console.error(err)
         return res.sendStatus(500) // never can be happened unless server error has occured
     }
 }
@@ -81,6 +83,7 @@ exports.serve = async (req, res) => {
             await order.save()
             waiting_orders.push(order)
         } catch (err) {
+            console.error(err)
             continue // never can be happened unless server error has occured
         }
     }
