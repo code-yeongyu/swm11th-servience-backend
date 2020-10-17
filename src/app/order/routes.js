@@ -70,8 +70,10 @@
  *                  type: integer
  *                  description: table의 id
  *              menu:
- *                  type: integer
- *                  descriptipn: 주문한 menu 의 id
+ *                  type: array
+ *                  items:
+ *                      type: string
+ *                  descriptipn: 주문한 menu 들
  * 
  *      serve_order_request:
  *          type: object
