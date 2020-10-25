@@ -70,7 +70,7 @@ exports.serve = async (req, res) => {
     }
 
     const { order_ids } = req.body
-    const waiting_orders = new Array(order_ids.length) // hack for gc
+    const waiting_orders = []
 
     for (let i = 0; i < order_ids.length; i++) {
         const order_id = order_ids[i]
