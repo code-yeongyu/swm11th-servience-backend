@@ -10,9 +10,10 @@ exports.createMessage = (message_type, target_object, content) => {
 }
 
 exports.broadcast = (clients, message) => {
-    clients.forEach((client) => {
-        client.send(message)
-    })
+    for (let i = 0; i < clients.length; i++) {
+        clients[i].send(message)
+    }
+    console.log("Sent to all.")
 }
 
 exports.send = (clients, client_id, message) => {
@@ -20,6 +21,7 @@ exports.send = (clients, client_id, message) => {
         const client = clients[i]
         if (client.websocket_id === client_id) {
             client.send(message)
+            console.log("Sent to "+client_id+".")
             return
         }
     }
