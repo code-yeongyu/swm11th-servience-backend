@@ -175,7 +175,7 @@ const tableIDNotEmptyValidator = body('table_id').notEmpty().withMessage(errorWi
 const storeIDNotEmptyValidator = body('store_id').notEmpty().withMessage(errorWithMessage(errorCode.ParameterError))
 const idValidator = body('order_ids').notEmpty().withMessage(errorWithMessage(errorCode.ParameterError)).isArray().withMessage(errorWithMessage(errorCode.ParameterError))
 
-router.get('/', authMiddleware, controllers.getOrders)
+router.get('/', controllers.getOrders)
 router.post('/', [authMiddleware, menuNotEmptyValidator, tableIDNotEmptyValidator, storeIDNotEmptyValidator], controllers.addOrder)
 router.patch('/:order_id', controllers.updateStatusDone)
 router.post('/serve', idValidator, controllers.serve)
