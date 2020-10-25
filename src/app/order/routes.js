@@ -39,6 +39,9 @@
  *                          items:
  *                              type: object
  *                              properties:
+ *                                  _id:
+ *                                      type: string
+ *                                      description: 주문 ID
  *                                  orderer:
  *                                      type: string
  *                                      description: 주문자 username
@@ -102,8 +105,6 @@
  *                      $ref: "#/definitions/get_orders_response"
  *              400:
  *                  description: ParameterError
- *              401:
- *                  description: Unauthorized
  *      post:
  *          tags:
  *              - order
@@ -152,7 +153,7 @@
  *              - in: "body"
  *                required: true
  *                schema:
- *                    $ref: "#/definitions/create_order_request"
+ *                    $ref: "#/definitions/serve_order_request"
  *          responses:
  *              200:
  *                  description: successfull updated status to next level
