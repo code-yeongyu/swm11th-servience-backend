@@ -11,7 +11,10 @@ exports.createMessage = (message_type, target_object, content) => {
 
 exports.broadcast = (clients, message) => {
     for (let i = 0; i < clients.length; i++) {
-        clients[i].send(message)
+        const client = clients[i]
+        if (client.readyState === WebSocket.OPEN) {
+            client.send(data);
+        }
     }
     console.log("Sent to all.")
 }
@@ -19,10 +22,13 @@ exports.broadcast = (clients, message) => {
 exports.send = (clients, client_id, message) => {
     for (let i = 0; i < clients.length; i++) {
         const client = clients[i]
-        if (client.websocket_id === client_id) {
-            client.send(message)
-            console.log("Sent to "+client_id+".")
-            return
+        if (client.readyState === WebSocket.OPEN) {
+            if (client.websocket_id === client_id) {
+                client.send(data);
+                client.send(message)
+                console.log("Sent to "+client_id+".")
+                return
+            }
         }
     }
 }
