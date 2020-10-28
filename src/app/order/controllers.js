@@ -14,7 +14,7 @@ exports.getOrders = async (req, res) => {
     // place below check user's attached store 
     /**/
     try {
-        let unfinished_orders = await Order.find({ 'serving_status': { $ne: 2 } })
+        let unfinished_orders = await Order.find({ 'serving_status': { $eq: 0 } })
         return res.json({
             "orders": unfinished_orders
         })
