@@ -4,11 +4,12 @@ const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const errorCode = require('./errors/codes.js')
 const errorWithMessage = require('./utils/error_message.js')
-
+const cors = require('cors')
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(morgan('combined'))
+app.use(cors())
 //DEFAULT MIDDLEWARES
 
 
