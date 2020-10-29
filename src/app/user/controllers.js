@@ -71,7 +71,7 @@ exports.auth = async (req, res) => {
     let token = jwt.sign(
         { username: req.body.username },
         secretObj.secret,
-        { expiresIn: '5m' }
+        { expiresIn: '60m' }
     )
     return res.json({ token: token })
 }
