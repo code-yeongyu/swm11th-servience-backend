@@ -1,3 +1,5 @@
+const WebSocket = require('ws');
+
 exports.robot_store = []
 exports.display_store = []
 
