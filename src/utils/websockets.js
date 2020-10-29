@@ -15,7 +15,7 @@ exports.broadcast = (clients, message) => {
     for (let i = 0; i < clients.length; i++) {
         const client = clients[i]
         if (client.readyState === WebSocket.OPEN) {
-            client.send(data);
+            client.send(message);
         }
     }
     console.log("Sent to all.")
