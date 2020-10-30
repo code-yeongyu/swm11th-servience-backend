@@ -52,7 +52,7 @@ exports.updateStatusDone = async (req, res) => {
             }
             order.serving_status = 2
             await order.save()
-            wsUtil.broadcast(wsUtil.display_store, wsUtil.createMessage(wsMessageType.Update, wsMessageObject.Order, order))
+            wsUtil.broadcast(wsUtil.display_store, wsUtil.createMessage(wsMessageType.Update, wsTargetObject.Order, order))
             // codes for notifying to display should be placed here.
             return res.sendStatus(200)
         } catch (err) {
@@ -93,8 +93,8 @@ exports.serve = async (req, res) => {
     const result_orders = {
         "orders": waiting_orders
     }
-
-    wsUtil.broadcast(wsUtil.robot_store, wsUtil.createMessage(wsMessageType.Add, wsMessageType.Robot, result_orders))
+    
+    wsUtil.broadcast(wsUtil.robot_store, wsUtil.createMessage(wsMessageType.Update, wsTargetObject.Robot, result_orders))
 
     return res.sendStatus(200)
 }
