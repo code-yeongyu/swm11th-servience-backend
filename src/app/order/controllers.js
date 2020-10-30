@@ -63,27 +63,6 @@ exports.updateStatusDone = async (req, res) => {
     }
 }
 
-exports.pending = async (req, res) => {
-    const order_id = req.param("order_id")
-    if (order_id) {
-        try {
-            const order = await Order.findOne({ '_id': order_id })
-            if (order.serving_status === 2) {
-                return res.sendStatus(400)
-            }
-            order.serving_status = -1
-            await order.save()
-            wsUtil.broadcast(wsUtil.display_store, wsUtil.createMessage(wsMessageType.Update, wsTargetObject.Order, order))
-            // codes for notifying to display should be placed here.
-            return res.sendStatus(200)
-        } catch (err) {
-            return res.sendStatus(404)
-        }
-    } else {
-        return res.sendStatus(400)
-    }
-}
-
 exports.serve = async (req, res) => {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
