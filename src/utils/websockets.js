@@ -28,7 +28,6 @@ exports.send = (clients, client_id, message) => {
             if (client.product_id === client_id) {
                 client.send(message)
                 console.log("Sent to "+client_id+".")
-                return
             }
         }
     }
