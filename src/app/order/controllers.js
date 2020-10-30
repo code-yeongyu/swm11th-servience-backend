@@ -52,7 +52,7 @@ exports.updateStatusDone = async (req, res) => {
             }
             order.serving_status = 2
             await order.save()
-            wsUtil.broadcast(wsUtil.display_store, wsUtil.createMessage(wsMessageType.Update, wsMessageType.Order, order))
+            wsUtil.broadcast(wsUtil.display_store, wsUtil.createMessage(wsMessageType.Update, wsMessageObject.Order, order))
             // codes for notifying to display should be placed here.
             return res.sendStatus(200)
         } catch (err) {
