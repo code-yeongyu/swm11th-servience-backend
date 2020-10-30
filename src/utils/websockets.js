@@ -25,8 +25,7 @@ exports.send = (clients, client_id, message) => {
     for (let i = 0; i < clients.length; i++) {
         const client = clients[i]
         if (client.readyState === WebSocket.OPEN) {
-            if (client.websocket_id === client_id) {
-                client.send(data);
+            if (client.product_id === client_id) {
                 client.send(message)
                 console.log("Sent to "+client_id+".")
                 return

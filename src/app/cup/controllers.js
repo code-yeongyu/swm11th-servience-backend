@@ -24,7 +24,7 @@ exports.updateCupStatus = async (req, res) => {
 
     const cup = await Cup.findOne({ product_id: product_id })
     cup.status[cup_id] = !cup.status[cup_id]
-    cup.markModified('status');
+    cup.markModified('status')
     await cup.save()
 
     wsUtil.send(wsUtil.display_store, product_id, wsUtil.createMessage(wsMessageType.Update, wsTargetObject.Cup, cup))
