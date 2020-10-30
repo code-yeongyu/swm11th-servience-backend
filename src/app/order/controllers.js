@@ -64,11 +64,6 @@ exports.updateStatusDone = async (req, res) => {
 }
 
 exports.unpend = async (req, res) => {
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-        return res.status(400).json(errors.array())
-    }
-    
     const order_id = req.param("order_id")
     if (order_id) {
         try {
@@ -90,11 +85,7 @@ exports.unpend = async (req, res) => {
 }
 
 exports.pend = async (req, res) => {
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-        return res.status(400).json(errors.array())
-    }
-    
+    const order_id = req.param("order_id")
     if (order_id) {
         try {
             const order = await Order.findOne({ '_id': order_id })
