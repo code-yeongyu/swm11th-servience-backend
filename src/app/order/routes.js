@@ -180,5 +180,6 @@ router.get('/', controllers.getOrders)
 router.post('/', [authMiddleware, menuNotEmptyValidator, tableIDNotEmptyValidator, storeIDNotEmptyValidator], controllers.addOrder)
 router.patch('/:order_id', controllers.updateStatusDone)
 router.post('/serve', idValidator, controllers.serve)
+router.post('/pending', idValidator, controllers.pending)
 
 module.exports = router
