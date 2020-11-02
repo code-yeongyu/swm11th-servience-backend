@@ -174,7 +174,7 @@ const errorWithMessage = require('../../utils/error_message.js')
 const menuNotEmptyValidator = body('menu').notEmpty().withMessage(errorWithMessage(errorCode.ParameterError))
 const tableIDNotEmptyValidator = body('table_id').notEmpty().withMessage(errorWithMessage(errorCode.ParameterError))
 const storeIDNotEmptyValidator = body('store_id').notEmpty().withMessage(errorWithMessage(errorCode.ParameterError))
-const idValidator = body('order_ids').notEmpty().withMessage(errorWithMessage(errorCode.ParameterError)).isArray().withMessage(errorWithMessage(errorCode.ParameterError))
+const idValidator = body('order_ids').notEmpty().withMessage(errorWithMessage(errorCode.ParameterError))
 
 router.get('/', controllers.getOrders)
 router.post('/', [authMiddleware, menuNotEmptyValidator, tableIDNotEmptyValidator, storeIDNotEmptyValidator], controllers.addOrder)
