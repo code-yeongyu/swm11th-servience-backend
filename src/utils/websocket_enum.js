@@ -1,5 +1,6 @@
 exports.messageType = {
     "Add": "ADD",
+    "Reset": "RESET",
     "Update": "UPDATE",
     "Serve": "SERVE"
 }

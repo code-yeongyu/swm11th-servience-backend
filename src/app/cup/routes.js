@@ -73,6 +73,7 @@ const cupIDValidator = body('cup_id').notEmpty().withMessage(errorWithMessage(er
         return true
     })
 
+router.patch('/reset', productIDValidator, controllers.updateCupStatus)
 router.patch('/', [productIDValidator, cupIDValidator], controllers.updateCupStatus)
 
 module.exports = router
