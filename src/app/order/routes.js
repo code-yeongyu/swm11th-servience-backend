@@ -87,6 +87,15 @@
  *                  type: array
  *                  items:
  *                      type: string
+ *      notify_arrival_request:
+ *          type: object
+ *          required:
+ *              - cup_id
+ *          properties:
+ *              cup_id:
+ *                  type: integer
+ *                  minimum: 0
+ *                  maximum: 3
  */
 
 /**
@@ -156,11 +165,26 @@
  *                    $ref: "#/definitions/serve_order_request"
  *          responses:
  *              200:
- *                  description: successfull updated status to next level
+ *                  description: successfully updated status to next level
  *              400:
  *                  description: the serving status is already at highest level
  *              404:
  *                  description: No such ID
+ * /order/notify_arrival:
+ *      post:
+ *          tags:
+ *              - order
+ *          description: 로봇이 특정 위치에 도착했음을 알릴 때 사용하는 라우트입니다
+ *          produces:
+ *              - applicaion/json
+ *          parameters:
+ *              - in: "body"
+ *                required: true
+ *                schema:
+ *                    $ref: "#/definitions/notify_arrival_request"
+ *          responses:
+ *              200:
+ *                  description: OK
  */
 
 const express = require('express')
@@ -175,10 +199,12 @@ const menuNotEmptyValidator = body('menu').notEmpty().withMessage(errorWithMessa
 const tableIDNotEmptyValidator = body('table_id').notEmpty().withMessage(errorWithMessage(errorCode.ParameterError))
 const storeIDNotEmptyValidator = body('store_id').notEmpty().withMessage(errorWithMessage(errorCode.ParameterError))
 const idValidator = body('order_ids').notEmpty().withMessage(errorWithMessage(errorCode.ParameterError))
+const cupIDValidator = body('cup_id').notEmpty().withMessage(errorWithMessage(errorCode.ParameterError))
 
 router.get('/', controllers.getOrders)
 router.post('/', [authMiddleware, menuNotEmptyValidator, tableIDNotEmptyValidator, storeIDNotEmptyValidator], controllers.addOrder)
 router.patch('/:order_id', controllers.updateStatusDone)
 router.post('/serve', idValidator, controllers.serve)
+router.post('/notify_arrival', cupIDValidator, controllers.notifyArrival)
 
 module.exports = router

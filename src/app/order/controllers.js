@@ -42,6 +42,13 @@ exports.addOrder = async (req, res) => {
     }
 }
 
+exports.notifyArrival = async (req, res) => {
+    const { cup_id } = req.body
+    const content = { "cup_id": cup_id }
+    wsUtil.broadcast(wsUtil.display_store, wsUtil.createMessage(wsMessageType.Serve, wsTargetObject.Order, content))
+    return res.sendStatus(200)
+}
+
 exports.updateStatusDone = async (req, res) => {
     const order_id = req.param("order_id")
     if (order_id) {
