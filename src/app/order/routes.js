@@ -90,12 +90,10 @@
  *      notify_arrival_request:
  *          type: object
  *          required:
- *              - cup_id
+ *              - table_id
  *          properties:
- *              cup_id:
+ *              table_id:
  *                  type: integer
- *                  minimum: 0
- *                  maximum: 3
  */
 
 /**
@@ -199,12 +197,12 @@ const menuNotEmptyValidator = body('menu').notEmpty().withMessage(errorWithMessa
 const tableIDNotEmptyValidator = body('table_id').notEmpty().withMessage(errorWithMessage(errorCode.ParameterError))
 const storeIDNotEmptyValidator = body('store_id').notEmpty().withMessage(errorWithMessage(errorCode.ParameterError))
 const idValidator = body('order_ids').notEmpty().withMessage(errorWithMessage(errorCode.ParameterError))
-const cupIDValidator = body('cup_id').notEmpty().withMessage(errorWithMessage(errorCode.ParameterError))
+const tableIDValidator = body('table_id').notEmpty().withMessage(errorWithMessage(errorCode.ParameterError))
 
 router.get('/', controllers.getOrders)
 router.post('/', [authMiddleware, menuNotEmptyValidator, tableIDNotEmptyValidator, storeIDNotEmptyValidator], controllers.addOrder)
 router.patch('/:order_id', controllers.updateStatusDone)
 router.post('/serve', idValidator, controllers.serve)
-router.post('/notify_arrival', cupIDValidator, controllers.notifyArrival)
+router.post('/notify_arrival', tableIDValidator, controllers.notifyArrival)
 
 module.exports = router
