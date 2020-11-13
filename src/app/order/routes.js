@@ -77,7 +77,7 @@
  *                  items:
  *                      type: string
  *                  descriptipn: 주문한 menu 들
- * 
+ *
  *      serve_order_request:
  *          type: object
  *          required:
@@ -185,24 +185,40 @@
  *                  description: OK
  */
 
-const express = require('express')
-const { body } = require('express-validator')
-const router = express.Router()
-const controllers = require('./controllers.js')
-const authMiddleware = require('../../middlewares/auth.js')
-const errorCode = require('../../errors/codes.js')
-const errorWithMessage = require('../../utils/error_message.js')
+const express = require("express");
+const { body } = require("express-validator");
+const router = express.Router();
+const controllers = require("./controllers.js");
+const authMiddleware = require("../../middlewares/auth.js");
+const errorCode = require("../../errors/codes.js");
+const errorWithMessage = require("../../utils/error_message.js");
 
-const menuNotEmptyValidator = body('menu').notEmpty().withMessage(errorWithMessage(errorCode.ParameterError))
-const tableIDNotEmptyValidator = body('table_id').notEmpty().withMessage(errorWithMessage(errorCode.ParameterError))
-const storeIDNotEmptyValidator = body('store_id').notEmpty().withMessage(errorWithMessage(errorCode.ParameterError))
-const idValidator = body('order_ids').notEmpty().withMessage(errorWithMessage(errorCode.ParameterError))
-const tableIDValidator = body('table_id').notEmpty().withMessage(errorWithMessage(errorCode.ParameterError))
+const menuNotEmptyValidator = body("menu")
+  .notEmpty()
+  .withMessage(errorWithMessage(errorCode.ParameterError));
+const tableIDNotEmptyValidator = body("table_id")
+  .notEmpty()
+  .withMessage(errorWithMessage(errorCode.ParameterError));
+const storeIDNotEmptyValidator = body("store_id")
+  .notEmpty()
+  .withMessage(errorWithMessage(errorCode.ParameterError));
+const tableIDValidator = body("table_id")
+  .notEmpty()
+  .withMessage(errorWithMessage(errorCode.ParameterError));
 
-router.get('/', controllers.getOrders)
-router.post('/', [authMiddleware, menuNotEmptyValidator, tableIDNotEmptyValidator, storeIDNotEmptyValidator], controllers.addOrder)
-router.patch('/:order_id', controllers.updateStatusDone)
-router.post('/serve', idValidator, controllers.serve)
-router.post('/notify_arrival', tableIDValidator, controllers.notifyArrival)
+router.get("/", controllers.getOrders);
+router.post(
+  "/",
+  [
+    authMiddleware,
+    menuNotEmptyValidator,
+    tableIDNotEmptyValidator,
+    storeIDNotEmptyValidator,
+  ],
+  controllers.addOrder
+);
+router.patch("/:order_id", controllers.updateStatusDone);
+router.post("/serve", controllers.serve);
+router.post("/notify_arrival", tableIDValidator, controllers.notifyArrival);
 
-module.exports = router
+module.exports = router;
